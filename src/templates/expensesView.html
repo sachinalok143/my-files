@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{%load crispy_forms_tags%}
+{% load staticfiles%}
+
+{%block title %}WELCOME |{%endblock%}
+{%block content%}
+<div >
+
+	<div class="row">
+		<div class="col-md-8">
+			<div class="jumbotron">
+				<div class="btn-group">
+					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+						Filter by Category
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+						<h6 style="padding-left: 10px;"><a href="{%url 'get-stuffs-by-category' id=0%}">All</a></h6>
+						<hr>
+						{%for category in categories%}
+						<li  style="padding-left: 10px;"><a href="{%url 'get-stuffs-by-category' id=category.id%}">{{category.Title}}</a></li>
+						{%endfor%}
+					</ul>
+				</div>
+				<br><br>
+				<table id="tableData1" class="table table-bordered table-hovered table-striped" >
+					<thead>
+						<tr>
+							<td>
+								SN
+							</td>
+							<td>
+								Name Of stuff
+							</td>
+							<td>
+								Category
+							</td>
+							<td>
+								Price Per Piece
+							</td>
+							<td>
+								No of Pieces
+							</td>
+							<td>
+								Total Amount
+							</td>
+							<td>
+								Time
+							</td>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+						{% for expense in expenses %}
+						<tr>
+							<td>
+								{{forloop.counter}}
+							</td>
+							<td>
+								{{expense.Stuff_Name}}
+							</td>
+							<td>
+								{{expense.Category}}
+							</td>
+							<td>
+								{{expense.Price_Per_Piece}}.00/-
+							</td>
+							<td>
+								{{expense.No_Of_Stuffs}}
+							</td>
+							<td>
+								{{ expense.Total_Expenses}}.00/-
+							</td>
+							<td>
+								{{expense.Time|timesince}}
+							</td>
+							<td>
+								<a href="{% url 'remove-stuff' id=expense.id%}">
+									<span style="padding-left: 8px;padding-right: 8px; background-color: grey; border: 1px solid;">X</span>
+								</a>
+							</td>
+						</tr>
+						{%endfor%}
+					</tbody>				
+				</table>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="jumbotron">
+				<label><b>Add stuff to list</b></label>
+				<form action="" method="POST">{%csrf_token%}
+					{{form|crispy}}
+					<input type="submit" class="btn btn-primary" name="" value="Add">
+				</form>
+			</div>
+
+		</div>
+	</div>
+</div>
+<!-- Fusion Charts will render here-->
+<div class="row">
+	<div class="col-md-6">
+		<div class="jumbotron">
+			<div id="chart-1"></div>
+			{{ chartdata|safe }}
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="jumbotron">
+			<div id="chart-2"></div>
+			{{chartdataForMonth|safe}}
+		</div>
+	</div>
+</div>
+<!-- <div id="chart-2"></div> -->
+<!-- dumping JavaScript code here -->
+
+<script type="text/javascript">
+	$(document).ready( function () {
+		$('#tableData1').DataTable();
+	} );
+</script>
+
+
+{%endblock%}
